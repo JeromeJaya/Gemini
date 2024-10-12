@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generative AI Project</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      width: 400px;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>AI Text Generator</h2>
+    <textarea id="prompt" placeholder="Enter your prompt here..." rows="5"></textarea>
+    <button id="generateButton">Generate Text</button>
+    <pre id="response"></pre>
+  </div>
+
+  <!-- Import Google Generative AI SDK -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+
+  <!-- Include the main logic in a module -->
+  <script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    // Replace with your actual API key
+    const API_KEY = 'AIzaSyCfpwY4QcJn0l1_zKaBZPtPp9Hksciy-qI'; 
+
+    // Set up the model and API interaction
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    document.getElementById('generateButton').addEventListener('click', async () => {
+  const prompt = document.getElementById('prompt').value;
+  if (prompt.trim() === '') {
+    alert('Please enter a prompt');
+    return;
+  }
+  try {
+    const result = await model.generateContent(prompt);
+    console.log('API Response:', result);  // Log the full response
+
+    if (result.candidates && result.candidates.length > 0 && result.candidates[0].output) {
+      document.getElementById('response').textContent = result.candidates[0].output;
+    } else {
+      document.getElementById('response').textContent = 'No valid response from the API.';
+    }
+    
+  } catch (error) {
+    console.error('Error fetching solution:', error);
+    document.getElementById('response').textContent = 'An error occurred. Check the console for details.';
+  }
+});
+
+  </script>
+</body>
+</html>
